@@ -1,0 +1,136 @@
+package com.example.myapplication
+
+import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
+import com.example.myapplication.ui.theme.MyApplicationTheme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MyApplicationTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Mycalculator()
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Mycalculator() {
+    //
+    var operador1 by remember { mutableStateOf("0")}
+    var operador2 by remember { mutableStateOf("0")}
+    var selectetOperation by remember { mutableStateOf("Suma")}
+
+    //
+    var show by remember { mutableStateOf(false) }
+    var showToast by remember { mutableStateOf(false) }
+    var result by remember { mutableStateOf(0) }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+        )
+    {
+        Text("The grates calculathor", fontSize = 24.sp)
+        TextField(value = operador1, onValueChange = { operador1 = it})
+        TextField(value = operador2, onValueChange = { operador2 = it})
+        MyDropDownMenu(selectetOperation, { selectetOperation  = it })
+        Button(
+            onClick = {
+                if (selectetOperation == "Divisió" && operador2 == "0") {
+                    showToast = true
+                } else {
+                    show = true
+                    result = makeOperation(operador1, operador2, selectetOperation)
+                }
+            }
+        ) {
+            Text(text = "Calcula")
+        }
+        if (show) {
+            Text(text = "El resultat és $result")
+        }
+        if (showToast) {
+            Toast.makeText(LocalContext.current,"No pots dividir entre 0", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
+//@Preview(showBackground = true)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyDropDownMenu (operation:String, OnClick: (String) -> Unit) {
+    var expanded by remember { mutableStateOf(false) }
+    val operacions = listOf("Suma", "Resta", "Multiplicació", "Divisió")
+    OutlinedTextField(
+        value = operation,
+        onValueChange = { OnClick(it) },
+        enabled = false,
+        readOnly = true,
+        modifier = Modifier
+            .clickable { expanded = true }
+
+    )
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { expanded = false }
+    ) {
+        operacions.forEach { operation ->
+            DropdownMenuItem(text = { Text(text = operation) }, onClick = {
+                expanded = false
+                OnClick(operation)
+            })
+        }
+    }
+}
+
+fun makeOperation(operator1: String, operator2: String, operator: String): Int {
+    return when(operator) {
+        "Suma" -> operator1.toInt() + operator2.toInt()
+        "Resta" -> operator1.toInt() - operator2.toInt()
+        "Multiplicació" -> operator1.toInt() * operator2.toInt()
+        else -> operator1.toInt() / operator2.toInt()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    MyApplicationTheme {
+        Mycalculator()
+    }
+}
