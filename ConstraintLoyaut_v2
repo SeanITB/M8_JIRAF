@@ -1,0 +1,66 @@
+package com.example.constraintlayout_lavoratori
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.constraintlayout_lavoratori.ui.theme.ConstraintLayout_lavoratoriTheme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            ConstraintLayout_lavoratoriTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    ConstraintLoyout()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ConstraintLoyout(){
+    ConstraintLayout {
+        val (boxRed, boxYellow, boxGreen, boxCyan, boxMagenta) = createRefs()
+        Box(modifier = Modifier.size(120.dp).background(Color.Red).constrainAs(boxRed){
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+            bottom.linkTo(parent.bottom)
+            end.linkTo(parent.end)
+        })
+        Box( "Hello World" ,modifier = Modifier.size(120.dp).background(Color.Yellow).constrainAs(boxYellow){
+            start.linkTo(boxRed.start)
+            bottom.linkTo(boxRed.top)
+        })
+        Box(modifier = Modifier.size(120.dp).background(Color.Green).constrainAs(boxGreen){
+            start.linkTo(boxRed.start)
+            top.linkTo(boxRed.bottom)
+        })
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    ConstraintLayout_lavoratoriTheme {
+        ConstraintLoyout()
+    }
+}
