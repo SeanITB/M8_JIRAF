@@ -1,29 +1,37 @@
-package com.example.constraintlayout_lavoratori
+package com.example.constraintlayout_v2
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScopeInstance.align
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.constraintlayout_lavoratori.ui.theme.ConstraintLayout_lavoratoriTheme
+import androidx.constraintlayout.compose.Dimension
+import com.example.constraintlayout_v2.ui.theme.ConstraintLayout_v2Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ConstraintLayout_lavoratoriTheme {
+            ConstraintLayout_v2Theme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -36,31 +44,83 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/* toDo: explicacio Dani
+                Column ( verticalArrat = Arrangment.spaceBy(16.dp)
+                .constrainAs(boxRed) {
+                    width = Dimension.fillToCostrainsts (rev)
+                    heigth = " "
+                    width = Modifier.fillMaxWidth(o.2f) (%)
+                }
+                 */
+
 @Composable
 fun ConstraintLoyout(){
-    ConstraintLayout {
-        val (boxRed, boxYellow, boxGreen, boxCyan, boxMagenta) = createRefs()
-        Box(modifier = Modifier.size(120.dp).background(Color.Red).constrainAs(boxRed){
-            top.linkTo(parent.top)
-            start.linkTo(parent.start)
-            bottom.linkTo(parent.bottom)
-            end.linkTo(parent.end)
-        })
-        Box( "Hello World" ,modifier = Modifier.size(120.dp).background(Color.Yellow).constrainAs(boxYellow){
-            start.linkTo(boxRed.start)
-            bottom.linkTo(boxRed.top)
-        })
-        Box(modifier = Modifier.size(120.dp).background(Color.Green).constrainAs(boxGreen){
-            start.linkTo(boxRed.start)
-            top.linkTo(boxRed.bottom)
-        })
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Green),
+        //horizontalAlignment = Alignment.CenterHorizontally,
+        //verticalArrangement = Arrangment.spaceBy(16.dp)//.spaceBy(16.dp) FixMe: Arrangment.spaceBy(16.dp)
+    ) {
+        ConstraintLayout (
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            val topGuide = createGuidelineFromTop(0.1f)
+            val bottomGuide = createGuidelineFromBottom(0.1f)
+            val startGuide = createGuidelineFromStart(0.1f)
+            val endGuide = createGuidelineFromEnd(0.1f)
+            val (boxRed, boxYellow, boxGreen) = createRefs()
+            Box(
+                modifier = Modifier
+                .size(120.dp)
+                .background(Color.Red)
+                .constrainAs(boxRed) {
+                    /* fixMe
+                    width = Dimension.fillToCostrainsts
+                    height = Dimension.fillToCostrainsts
+                    width = Modifier.fillMaxWidth(0.2f)
+
+                     */
+                    top.linkTo(topGuide)
+                    bottom.linkTo(bottomGuide)
+                    start.linkTo(startGuide)
+                    end.linkTo(boxYellow.start)
+
+                })
+            Text( "Hello World!" ,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .width(200.dp)
+                    .background(Color.Yellow)
+                    .constrainAs(boxYellow) {
+                        top.linkTo(topGuide)
+                        bottom.linkTo(boxRed.bottom)
+                        start.linkTo(boxRed.end)
+                        end.linkTo(endGuide)
+                })
+            Text("Position",
+                //textHorizontalAlignment = Alignment.CenterHorizontally,
+                textAlign = TextAlign.Right, // toDo: aqui...  text mig horitzontal
+                modifier = Modifier
+                .width(200.dp)
+                .height(100.dp)
+                .background(Color.Blue)
+                .constrainAs(boxGreen) {
+                    top.linkTo(boxYellow.bottom)
+                    bottom.linkTo(bottomGuide)
+                    start.linkTo(boxRed.end)
+                    end.linkTo(endGuide)
+                    //centerHorizontallyTo(parent) fixMe: text mig horitzontal
+            })
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    ConstraintLayout_lavoratoriTheme {
+    ConstraintLayout_v2Theme {
         ConstraintLoyout()
     }
 }
