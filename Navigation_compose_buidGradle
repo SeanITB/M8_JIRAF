@@ -1,0 +1,6 @@
+
+// En android
+compileSdk = 34
+
+// En dependencies
+implementation("androidx.navigation:navigation-compose:2.7.5")
