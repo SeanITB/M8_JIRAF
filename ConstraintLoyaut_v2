@@ -3,16 +3,20 @@ package com.example.constraintlayout_v2
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScopeInstance.align
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -20,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,75 +49,157 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-/* toDo: explicacio Dani
-                Column ( verticalArrat = Arrangment.spaceBy(16.dp)
-                .constrainAs(boxRed) {
-                    width = Dimension.fillToCostrainsts (rev)
-                    heigth = " "
-                    width = Modifier.fillMaxWidth(o.2f) (%)
-                }
-                 */
+
 
 @Composable
-fun ConstraintLoyout(){
+fun ConstraintLoyout() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Green),
         //horizontalAlignment = Alignment.CenterHorizontally,
-        //verticalArrangement = Arrangment.spaceBy(16.dp)//.spaceBy(16.dp) FixMe: Arrangment.spaceBy(16.dp)
+        //verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        ConstraintLayout (
-            modifier = Modifier
-                .fillMaxWidth()
+        ConstraintLayout(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            val topGuide = createGuidelineFromTop(0.1f)
-            val bottomGuide = createGuidelineFromBottom(0.1f)
-            val startGuide = createGuidelineFromStart(0.1f)
-            val endGuide = createGuidelineFromEnd(0.1f)
-            val (boxRed, boxYellow, boxGreen) = createRefs()
-            Box(
+            val topGuideHeder = createGuidelineFromTop(0.1f)
+            val bottomGuideHeder = createGuidelineFromBottom(0.1f)
+            val startGuideHeder = createGuidelineFromStart(0.1f)
+            val endGuideHeder = createGuidelineFromEnd(0.1f)
+            val (icon, helloWorld, position) = createRefs()
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = "Example",
                 modifier = Modifier
-                .size(120.dp)
-                .background(Color.Red)
-                .constrainAs(boxRed) {
-                    /* fixMe
-                    width = Dimension.fillToCostrainsts
-                    height = Dimension.fillToCostrainsts
-                    width = Modifier.fillMaxWidth(0.2f)
-
-                     */
-                    top.linkTo(topGuide)
-                    bottom.linkTo(bottomGuide)
-                    start.linkTo(startGuide)
-                    end.linkTo(boxYellow.start)
-
-                })
-            Text( "Hello World!" ,
+                    .size(120.dp)
+                    .constrainAs(icon) {
+                        top.linkTo(topGuideHeder)
+                        bottom.linkTo(bottomGuideHeder)
+                        start.linkTo(startGuideHeder)
+                        end.linkTo(helloWorld.start)
+                    })
+            Text("Hello World!",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .width(200.dp)
                     .background(Color.Yellow)
-                    .constrainAs(boxYellow) {
-                        top.linkTo(topGuide)
-                        bottom.linkTo(boxRed.bottom)
-                        start.linkTo(boxRed.end)
-                        end.linkTo(endGuide)
-                })
+                    .constrainAs(helloWorld) {
+                        top.linkTo(topGuideHeder)
+                        bottom.linkTo(position.bottom)
+                        start.linkTo(icon.end)
+                        end.linkTo(endGuideHeder)
+                    })
             Text("Position",
                 //textHorizontalAlignment = Alignment.CenterHorizontally,
-                textAlign = TextAlign.Right, // toDo: aqui...  text mig horitzontal
+                textAlign = TextAlign.Start, // toDo: aqui...  text mig horitzontal
                 modifier = Modifier
-                .width(200.dp)
-                .height(100.dp)
-                .background(Color.Blue)
-                .constrainAs(boxGreen) {
-                    top.linkTo(boxYellow.bottom)
-                    bottom.linkTo(bottomGuide)
-                    start.linkTo(boxRed.end)
-                    end.linkTo(endGuide)
-                    //centerHorizontallyTo(parent) fixMe: text mig horitzontal
-            })
+                    .width(200.dp)
+                    .height(100.dp)
+                    .background(Color.Blue)
+                    .constrainAs(position) {
+                        top.linkTo(helloWorld.bottom, margin = 16.dp)
+                        bottom.linkTo(bottomGuideHeder)
+                        start.linkTo(icon.end)
+                        end.linkTo(endGuideHeder)
+                    })
+        }
+        ConstraintLayout{
+            val topGuideBody = createGuidelineFromTop(0.1f)
+            val bottomGuideBody = createGuidelineFromBottom(0.1f)
+            val startGuideBody = createGuidelineFromStart(0.1f)
+            val endGuideBody = createGuidelineFromEnd(0.1f)
+            val (moblilIcon1, mobilText, ipVoiceText, textIcon1, textIcon2, divider, mobilIcon2, emailText) = createRefs()
+            Image(
+                painter = painterResource(id = R.drawable.phone),
+                contentDescription = "phone icon",
+                modifier = Modifier
+                    .size(50.dp)
+                    .constrainAs(moblilIcon1) {
+                        top.linkTo(mobilText.top)
+                        start.linkTo(startGuideBody)
+                        end.linkTo(mobilText.start, margin = 16.dp)
+                    })
+            Text("674987456\nMobile",
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(90.dp)
+                    .constrainAs(mobilText) {
+                        top.linkTo(topGuideBody)
+                        bottom.linkTo(ipVoiceText.top)
+                        start.linkTo(moblilIcon1.end)
+                        end.linkTo(textIcon1.start)
+                    })
+            Image(
+                painter = painterResource(id = R.drawable.text_icon),
+                contentDescription = "text icon 1",
+                modifier = Modifier
+                    .size(50.dp)
+                    .constrainAs(textIcon1) {
+                        top.linkTo(mobilText.top)
+                        start.linkTo(mobilText.end)
+                        end.linkTo(endGuideBody)
+                    })
+            Text("(+34) 334587656\nIP Voice",
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(90.dp)
+                    .constrainAs(ipVoiceText) {
+                        top.linkTo(mobilText.bottom)
+                        bottom.linkTo(emailText.top)
+                        start.linkTo(mobilText.start)
+                        end.linkTo(textIcon2.start)
+                    })
+            Image(
+                painter = painterResource(id = R.drawable.text_icon),
+                contentDescription = "text icon 1",
+                modifier = Modifier
+                    .size(50.dp)
+                    .constrainAs(textIcon2) {
+                        top.linkTo(ipVoiceText.top)
+                        start.linkTo(ipVoiceText.end)
+                        end.linkTo(endGuideBody)
+                    })
+            Divider(
+                color = Color.Gray,
+                thickness = 1.dp,
+                modifier = Modifier
+                    .padding(vertical = 4.dp)
+                    .width(300.dp)
+                    .constrainAs(divider) {
+                        top.linkTo(ipVoiceText.bottom)
+                        start.linkTo(startGuideBody)
+                        end.linkTo(endGuideBody)
+                    }
+            )
+            Image(
+                painter = painterResource(id = R.drawable.phone),
+                contentDescription = "phone icon",
+                modifier = Modifier
+                    .size(50.dp)
+                    .constrainAs(mobilIcon2) {
+                        top.linkTo(divider.bottom, margin = 16.dp)
+                        bottom.linkTo(bottomGuideBody)
+                        start.linkTo(moblilIcon1.start)
+                    })
+            Text("name@domain.net\nWork",
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(90.dp)
+                    .constrainAs(emailText) {
+                        top.linkTo(mobilIcon2.top)
+                        start.linkTo(mobilText.start)
+                    }
+            )
+        }
+        Row() {
+            var show: Boolean
+            Button(
+                onClick = { show = true },
+                modifier = Modifier
+            ) {
+                Text(text = "BUTTON 1")
+            }
         }
     }
 }
