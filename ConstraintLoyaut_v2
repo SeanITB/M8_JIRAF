@@ -15,11 +15,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -86,7 +88,6 @@ fun ConstraintLoyout() {
                     .background(Color.Yellow)
                     .constrainAs(helloWorld) {
                         top.linkTo(topGuideHeder)
-                        bottom.linkTo(position.bottom)
                         start.linkTo(icon.end)
                         end.linkTo(endGuideHeder)
                     })
@@ -131,7 +132,7 @@ fun ConstraintLoyout() {
                         end.linkTo(textIcon1.start)
                     })
             Image(
-                painter = painterResource(id = R.drawable.text_icon),
+                painter = painterResource(id = R.drawable.phone),
                 contentDescription = "text icon 1",
                 modifier = Modifier
                     .size(50.dp)
@@ -151,7 +152,7 @@ fun ConstraintLoyout() {
                         end.linkTo(textIcon2.start)
                     })
             Image(
-                painter = painterResource(id = R.drawable.text_icon),
+                painter = painterResource(id = R.drawable.phone),
                 contentDescription = "text icon 1",
                 modifier = Modifier
                     .size(50.dp)
@@ -192,15 +193,45 @@ fun ConstraintLoyout() {
                     }
             )
         }
-        Row() {
+        Row(
+            //horizontalAlignment = Alignment.CenterHorizontally,
+            //modifier = Modifier.width(375.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(17.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             var show: Boolean
             Button(
                 onClick = { show = true },
+                shape = RoundedCornerShape(5.dp),
                 modifier = Modifier
             ) {
                 Text(text = "BUTTON 1")
             }
+            Button(
+                onClick = { show = true },
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+            ) {
+                Text(text = "BUTTON 2")
+            }
+            Button(
+                onClick = { show = true },
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+            ) {
+                Text(text = "BUTTON 3")
+            }
         }
+        Text(
+            "",
+            modifier = Modifier
+                .padding(30.dp)
+                .fillMaxWidth()
+                .height(400.dp)
+                .background(Color.Blue)
+        )
     }
 }
 
