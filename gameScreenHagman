@@ -1,0 +1,148 @@
+package com.example.hagmanapp
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GameScreen(navigationController: NavHostController, dificultad: String?) {
+    var dificultadText by remember { mutableStateOf("") }
+    var lletraUsuari by remember { mutableStateOf("") }
+    //val parceles = arrayOf("lletra1", "lletra2", "lletra3", "lletra4", "lletra5")
+    var lletreSelecionades by remember { mutableStateOf(arrayOf("_", "_", "_", "_", "_")) }
+    var comprovar by remember { mutableStateOf(false) }
+    var esCorrecte by remember { mutableStateOf(false) }
+    var index by remember { mutableStateOf(0) }
+    var numIndex by remember { mutableStateOf(0) }
+    var numIntents by remember { mutableStateOf(7) }
+    var dificultadInt by remember { mutableStateOf(0) }
+    var arrParaulesAleatories by remember { mutableStateOf(arrayOf(
+        arrayOf(
+        "Luna", "Sola", "Mesa", "Vale", "Flor",
+        "Hola", "Mari", "Pato", "Ciel", "Rial",
+        "Hiel", "Tren", "Piel", "Neon", "Azul",
+        "Solo", "Peso", "Fino", "Lago", "Rama",
+        "Pino", "Rata", "Nudo", "Polo", "Cala",
+        "Nube", "Fosa", "Polo", "Cuna", "Pila"
+        ),
+        arrayOf(
+            "gatet", "goset", "fulla", "cotxe",
+            "lluna", "taula", "aigua", "solar",
+            "arbre", "riuet", "porta", "finca",
+            "color", "groga", "volar", "tenir",
+            "deman", "llengua", "cotxe", "llibre",
+            "marxa", "pluja", "doble", "fusta",
+            "tarda", "tenda", "tenir", "tarro",
+            "volar", "vista", "venda", "vitge",
+            "estar"
+        ),
+        arrayOf(
+            "Palabra", "Escuela", "Trabajo", "Vestido",
+            "Sardina", "Cancion", "Lapizes", "Guitarra",
+            "Perrito", "Galleta", "Familia", "Ventana",
+            "Relojes", "Manzana", "Teclado", "Zapato",
+            "Cocinas", "Medalla", "Deporte",
+        )
+    )) }
+    //Crear paraula aleatoria
+    var paraulaAleatoria by remember { mutableStateOf(arrayOf("", "", "")) }
+    if (dificultad.equals("Easy")) {
+        lletreSelecionades = arrayOf("_", "_", "_", "_")
+    } else if (dificultad.equals("Medium")) {
+        lletreSelecionades = arrayOf("_", "_", "_", "_", "_")
+    } else {
+        lletreSelecionades = arrayOf("_", "_", "_", "_", "_", "_", "_")
+    }
+    Text(text = "$paraulaAleatoria")
+    when (dificultad) {
+        "Hard" -> {
+            dificultadText = "Mode dificil"
+            dificultadInt = 0
+        }
+        "Medium" -> {
+            dificultadText = "Mode mitg"
+            dificultadInt = 1
+        }
+        "Easy" -> {
+            dificultadText = "Mode facil"
+            dificultadInt = 2
+        }
+        else -> dificultadText = "NO dificultad selecionada"
+    }
+    paraulaAleatoria[dificultadInt] = 
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = dificultadText)
+        Row(
+            modifier = Modifier
+                .width(130.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            lletreSelecionades.indices.forEach { parcela ->
+                Text(text = lletreSelecionades[parcela])
+            }
+        }
+        TextField(
+            value = lletraUsuari,
+            onValueChange = { lletraUsuari = it },
+            label = { Text(text = "Lletra") }
+        )
+        Button(onClick = { comprovar = true }) {
+            Text(text = "Comprova!")
+        }
+        Text(text = "ATTEMPTS: $numIntents")
+        if ("_" in lletreSelecionades) {
+            if (comprovar == true) {
+                if (lletraUsuari in paraulaAleatoria.lowercase()) esCorrecte =
+                    true // Comproba si esxisteix la lletra en la random paraula
+                else comprovar = false
+                if (esCorrecte == true) {
+                    //Trobar les posicions de les lletres
+                    val indexosList: MutableList<Int> = mutableListOf()
+                    do {
+                        index = paraulaAleatoria.indexOf(lletraUsuari, index + 1)
+                        if (index != -1) {
+                            indexosList.add(index)
+                            numIndex++
+                        }
+                    } while (index != -1)
+
+                    //Mostrar les lletres
+                    for (pos in indexosList.indices) {
+                        lletreSelecionades[indexosList[pos]] = lletraUsuari
+                    }
+                    comprovar = false
+                    lletraUsuari = ""
+                    numIntents--
+                }
+            }
+        } else {
+            numIntents = 5 - numIntents
+            navigationController.navigate(
+                Routes.ResultScreen.createRouteToResult(
+                    dificultad = dificultad.toString(),
+                    numIntents = numIntents
+                )
+            )
+        }
+    }
+}
