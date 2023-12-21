@@ -1,9 +1,14 @@
 package com.example.hagmanapp
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,27 +24,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun GameScreen(navigationController: NavHostController, dificultad: String?) {
     var dificultadText by remember { mutableStateOf("") }
     var lletraUsuari by remember { mutableStateOf("") }
-    //val parceles = arrayOf("lletra1", "lletra2", "lletra3", "lletra4", "lletra5")
-    var lletreSelecionades by remember { mutableStateOf(arrayOf("_", "_", "_", "_", "_")) }
+    var lletreSelecionades by remember { mutableStateOf(arrayOf("")) }
     var comprovar by remember { mutableStateOf(false) }
     var esCorrecte by remember { mutableStateOf(false) }
-    var index by remember { mutableStateOf(0) }
-    var numIndex by remember { mutableStateOf(0) }
-    var numIntents by remember { mutableStateOf(7) }
+    var index by remember { mutableStateOf(-1) }
+    val arrIntent: Array<Int> = arrayOf(6, 7, 9)
+    var numIntents by remember { mutableStateOf(0) }
     var dificultadInt by remember { mutableStateOf(0) }
-    var arrParaulesAleatories by remember { mutableStateOf(arrayOf(
+    val abcCatalan = arrayOf(
+        "a", "b", "c", "d", "e", "f", "g", "h", "i",
+        "j", "k", "l", "m", "n", "o", "p", "q", "r",
+        "s", "t", "u", "v", "w", "x", "y", "z", "ç"
+    )
+    var arrParaulesAleatories: Array<Array<String>> = arrayOf(
         arrayOf(
-        "Luna", "Sola", "Mesa", "Vale", "Flor",
-        "Hola", "Mari", "Pato", "Ciel", "Rial",
-        "Hiel", "Tren", "Piel", "Neon", "Azul",
-        "Solo", "Peso", "Fino", "Lago", "Rama",
-        "Pino", "Rata", "Nudo", "Polo", "Cala",
-        "Nube", "Fosa", "Polo", "Cuna", "Pila"
+            "Luna", "Sola", "Mesa", "Vale", "Flor",
+            "Hola", "Mari", "Pato", "Ciel", "Rial",
+            "Hiel", "Tren", "Piel", "Neon", "Azul",
+            "Solo", "Peso", "Fino", "Lago", "Rama",
+            "Pino", "Rata", "Nudo", "Polo", "Cala",
+            "Nube", "Fosa", "Polo", "Cuna", "Pila"
         ),
         arrayOf(
             "gatet", "goset", "fulla", "cotxe",
@@ -59,39 +68,49 @@ fun GameScreen(navigationController: NavHostController, dificultad: String?) {
             "Relojes", "Manzana", "Teclado", "Zapato",
             "Cocinas", "Medalla", "Deporte",
         )
-    )) }
+    )
     //Crear paraula aleatoria
-    var paraulaAleatoria by remember { mutableStateOf(arrayOf("", "", "")) }
-    if (dificultad.equals("Easy")) {
-        lletreSelecionades = arrayOf("_", "_", "_", "_")
-    } else if (dificultad.equals("Medium")) {
-        lletreSelecionades = arrayOf("_", "_", "_", "_", "_")
-    } else {
-        lletreSelecionades = arrayOf("_", "_", "_", "_", "_", "_", "_")
+    if (lletreSelecionades.size == 1) {
+        /*
+        if (dificultad.equals("Easy")) {
+            lletreSelecionades = arrayOf("_", "_", "_", "_")
+        } else if (dificultad.equals("Medium")) {
+            lletreSelecionades = arrayOf("_", "_", "_", "_", "_")
+        } else {
+            lletreSelecionades = arrayOf("_", "_", "_", "_", "_", "_", "_")
+        }
+
+         */
+        when (dificultad) {
+            "Easy" -> {
+                dificultadText = "Mode facil"
+                lletreSelecionades = arrayOf("_", "_", "_", "_")
+                dificultadInt = 0
+                numIntents = arrIntent[dificultadInt]
+            }
+            "Medium" -> {
+                dificultadText = "Mode mitg"
+                lletreSelecionades = arrayOf("_", "_", "_", "_", "_")
+                dificultadInt = 1
+                numIntents = arrIntent[dificultadInt]
+            }
+            "Hard" -> {
+                dificultadText = "Mode dificil"
+                lletreSelecionades = arrayOf("_", "_", "_", "_", "_", "_", "_")
+                dificultadInt = 2
+                numIntents = arrIntent[dificultadInt]
+            }
+            else -> dificultadText = "NO dificultad selecionada"
+        }
     }
-    Text(text = "$paraulaAleatoria")
-    when (dificultad) {
-        "Hard" -> {
-            dificultadText = "Mode dificil"
-            dificultadInt = 0
-        }
-        "Medium" -> {
-            dificultadText = "Mode mitg"
-            dificultadInt = 1
-        }
-        "Easy" -> {
-            dificultadText = "Mode facil"
-            dificultadInt = 2
-        }
-        else -> dificultadText = "NO dificultad selecionada"
-    }
-    paraulaAleatoria[dificultadInt] = 
+    val paraulaAleatoria by remember { mutableStateOf(arrParaulesAleatories[dificultadInt].random()) }
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = dificultadText)
+        Text(text = paraulaAleatoria)
         Row(
             modifier = Modifier
                 .width(130.dp),
@@ -100,7 +119,7 @@ fun GameScreen(navigationController: NavHostController, dificultad: String?) {
             lletreSelecionades.indices.forEach { parcela ->
                 Text(text = lletreSelecionades[parcela])
             }
-        }
+        }    
         TextField(
             value = lletraUsuari,
             onValueChange = { lletraUsuari = it },
@@ -110,19 +129,19 @@ fun GameScreen(navigationController: NavHostController, dificultad: String?) {
             Text(text = "Comprova!")
         }
         Text(text = "ATTEMPTS: $numIntents")
-        if ("_" in lletreSelecionades) {
+        if ("_" in lletreSelecionades || numIntents == 0) {
             if (comprovar == true) {
-                if (lletraUsuari in paraulaAleatoria.lowercase()) esCorrecte =
-                    true // Comproba si esxisteix la lletra en la random paraula
-                else comprovar = false
+                if (lletraUsuari in paraulaAleatoria.lowercase())
+                    esCorrecte = true // Comproba si esxisteix la lletra en la random paraula
+                else
+                    comprovar = false
                 if (esCorrecte == true) {
                     //Trobar les posicions de les lletres
                     val indexosList: MutableList<Int> = mutableListOf()
                     do {
-                        index = paraulaAleatoria.indexOf(lletraUsuari, index + 1)
+                        index = paraulaAleatoria.lowercase().indexOf(lletraUsuari, index + 1)
                         if (index != -1) {
                             indexosList.add(index)
-                            numIndex++
                         }
                     } while (index != -1)
 
@@ -131,12 +150,12 @@ fun GameScreen(navigationController: NavHostController, dificultad: String?) {
                         lletreSelecionades[indexosList[pos]] = lletraUsuari
                     }
                     comprovar = false
-                    lletraUsuari = ""
                     numIntents--
                 }
+                lletraUsuari = ""
             }
         } else {
-            numIntents = 5 - numIntents
+            numIntents = arrIntent[dificultadInt] - numIntents
             navigationController.navigate(
                 Routes.ResultScreen.createRouteToResult(
                     dificultad = dificultad.toString(),
